@@ -1,22 +1,33 @@
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class Rescate implements Runnable {
 
     private final List<Pasajero> prioridades;
 
     public Rescate(List<Pasajero> pasajerosOrdenadosPorPrioridad) {
-
-        this.prioridades = Collections.synchronizedList(pasajerosOrdenadosPorPrioridad);
+        // Ya no necesitamos Collections.synchronizedList porque usamos semáforos
+        this.prioridades = pasajerosOrdenadosPorPrioridad;
     }
 
     @Override
     public void run() {
-        Balsa acasta = new Balsa("Acasta", 1, 500, prioridades);        // 0.5 s -> 500 ms
-        Balsa banff  = new Balsa("Banff", 2, 1000, prioridades);        // 1 s -> 1000 ms
-        Balsa cadiz  = new Balsa("Cadiz", 3, 2000, prioridades);        // 2 s -> 2000 ms
-        Balsa deimos = new Balsa("Deimos", 4, 4000, prioridades);       // 4 s -> 4000 ms
-        Balsa exped  = new Balsa("Expedición", 5, 8000, prioridades);   // 8 s -> 8000 ms
+        // Crear un semáforo binario (1 permiso) para controlar el acceso al recurso compartido
+        Semaphore semaforo = new Semaphore(1);
+
+        Balsa acasta = new Balsa("Acasta", 1, 500, prioridades, semaforo);
+        Balsa banff  = new Balsa("Banff", 2, 1000, prioridades, semaforo);
+        Balsa cadiz  = new Balsa("Cadiz", 3, 2000, prioridades, semaforo);
+        Balsa deimos = new Balsa("Deimos", 4, 4000, prioridades, semaforo);
+        Balsa exped  = new Balsa("Expedición", 5, 8000, prioridades, semaforo);
+
+        // Establecer prioridades de hilos: Mayor capacidad = Mayor prioridad
+        // Prioridades van de Thread.MIN_PRIORITY (1) a Thread.MAX_PRIORITY (10)
+        acasta.setPriority(Thread.MIN_PRIORITY);
+        banff.setPriority(3);
+        cadiz.setPriority(Thread.NORM_PRIORITY);
+        deimos.setPriority(7);
+        exped.setPriority(Thread.MAX_PRIORITY);
 
         acasta.start();
         banff.start();
