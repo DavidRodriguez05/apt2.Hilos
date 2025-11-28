@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -12,7 +13,6 @@ public class Rescate implements Runnable {
 
     @Override
     public void run() {
-        // Crear un semáforo binario (1 permiso) para controlar el acceso al recurso compartido
         Semaphore semaforo = new Semaphore(1);
 
         Balsa acasta = new Balsa("Acasta", 1, 500, prioridades, semaforo);
@@ -21,8 +21,6 @@ public class Rescate implements Runnable {
         Balsa deimos = new Balsa("Deimos", 4, 4000, prioridades, semaforo);
         Balsa exped  = new Balsa("Expedición", 5, 8000, prioridades, semaforo);
 
-        // Establecer prioridades de hilos: Mayor capacidad = Mayor prioridad
-        // Prioridades van de Thread.MIN_PRIORITY (1) a Thread.MAX_PRIORITY (10)
         acasta.setPriority(Thread.MIN_PRIORITY);
         banff.setPriority(3);
         cadiz.setPriority(Thread.NORM_PRIORITY);
