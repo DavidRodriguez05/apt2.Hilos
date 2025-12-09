@@ -29,7 +29,7 @@ public class Balsa extends Thread {
                 semaforo.acquire();
 
                 for (int i = 0; i < capacidad && !arrayCompartido.isEmpty(); i++) {
-                    rescatadosArray.add(arrayCompartido.remove(0));
+                    rescatadosArray.add(arrayCompartido.removeFirst());
                 }
 
                 // Liberar el semáforo

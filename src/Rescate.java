@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -7,7 +6,7 @@ public class Rescate implements Runnable {
     private final List<Pasajero> prioridades;
 
     public Rescate(List<Pasajero> pasajerosOrdenadosPorPrioridad) {
-        // Ya no necesitamos Collections.synchronizedList porque usamos semáforos
+
         this.prioridades = pasajerosOrdenadosPorPrioridad;
     }
 
@@ -21,11 +20,11 @@ public class Rescate implements Runnable {
         Balsa deimos = new Balsa("Deimos", 4, 4000, prioridades, semaforo);
         Balsa exped  = new Balsa("Expedición", 5, 8000, prioridades, semaforo);
 
-        acasta.setPriority(Thread.MIN_PRIORITY);
-        banff.setPriority(3);
+        acasta.setPriority(Thread.MAX_PRIORITY);
+        banff.setPriority(7);
         cadiz.setPriority(Thread.NORM_PRIORITY);
-        deimos.setPriority(7);
-        exped.setPriority(Thread.MAX_PRIORITY);
+        deimos.setPriority(3);
+        exped.setPriority(Thread.MIN_PRIORITY);
 
         acasta.start();
         banff.start();
